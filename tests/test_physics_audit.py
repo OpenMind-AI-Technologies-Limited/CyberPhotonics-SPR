@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 from dataclasses import asdict
 from pathlib import Path
 
@@ -177,3 +179,24 @@ def test_audit_rejects_synthetic_manifest(tmp_path: Path) -> None:
     report = audit_comsol_iteration(root)
     assert not report["consistency_ok"]
     assert any("COMSOL backend" in error for error in report["errors"])
+
+
+def test_research_completion_audit_command_exits_nonzero_on_tampered_input(tmp_path: Path) -> None:
+    root = _fixture(tmp_path)
+    output = tmp_path / "audit.json"
+    script = Path(__file__).resolve().parents[1] / "scripts" / "research_completion.py"
+    command = [
+        sys.executable,
+        str(script),
+        "audit-comsol",
+        "--iteration", str(root),
+        "--json-out", str(output),
+    ]
+    passed = subprocess.run(command, check=False, capture_output=True, text=True)
+    assert passed.returncode == 0, passed.stderr
+    assert json.loads(output.read_text(encoding="utf-8"))["consistency_ok"] is True
+
+    (tmp_path / "fixture.mph").write_text("tampered", encoding="utf-8")
+    failed = subprocess.run(command, check=False, capture_output=True, text=True)
+    assert failed.returncode == 2, failed.stderr
+    assert json.loads(output.read_text(encoding="utf-8"))["consistency_ok"] is False
