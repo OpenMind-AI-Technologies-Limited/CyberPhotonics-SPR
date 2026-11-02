@@ -29,7 +29,7 @@ those numbers are not COMSOL output, measured PCF-SPR performance, or evidence o
 4. **Uncertainty and ablations.** Measure held-out coverage and interval widths;
    report OOD behavior, pre- and post-projection validity, and multiple seeds.
    Compare full method with constraints/calibration/ensemble components removed.
-   Account for correlated RI rows: geometry groups are the independent split unit.
+   Calibrate across geometry-group residual maxima (not independent RI rows), and report whether the number of held-out groups supports nominal conformal coverage.
 5. **Evidence-bound results.** Report numerical values only after results, configurations,
    model/dataset hashes and test scripts are archived. Do not label synthetic or
    surrogate outputs as electromagnetic or experimental results.
