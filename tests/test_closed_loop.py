@@ -253,6 +253,9 @@ def test_closed_loop_iteration_writes_auditable_artifacts(tmp_path: Path) -> Non
     augmented = pd.read_csv(artifacts.augmented_dataset)
     assert len(augmented) == 6
     assert all(column in augmented.columns for column in GEOMETRY_COLUMNS)
+    augmented_samples = augmented.loc[augmented["source"].notna()]
+    assert augmented_samples["source"].eq("synthetic").all()
+    assert augmented_samples["evidence_class"].eq("software_only").all()
 
 
 def _five_point_validation_frame() -> pd.DataFrame:
