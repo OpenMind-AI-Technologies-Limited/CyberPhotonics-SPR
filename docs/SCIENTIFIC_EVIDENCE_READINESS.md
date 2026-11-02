@@ -43,6 +43,10 @@ those numbers are not COMSOL output, measured PCF-SPR performance, or evidence o
 python scripts/validation_campaign.py preflight \
   --config configs/real_validation_campaign.yaml --strict
 
+python scripts/validation_campaign.py init \
+  --config configs/real_validation_campaign.yaml \
+  --out outputs/real_validation/campaign
+
 python scripts/research_completion.py run-comsol \
   --campaign outputs/real_validation/campaign
 
