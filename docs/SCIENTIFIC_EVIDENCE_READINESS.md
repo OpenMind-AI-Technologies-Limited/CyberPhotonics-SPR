@@ -147,3 +147,141 @@ Selected designs enter `PHYSICS_VERIFICATION_REQUESTS.csv` with
 not an untouched external test, and generation seeds are **not**
 independent model-training replicates. An actual solver study, external
 holdout and physical claim review remain mandatory.
+
+
+## Stage 5: independent COMSOL request-to-spectrum comparison
+
+The Stage 5 importer connects each frozen `PHYSICS_VERIFICATION_REQUESTS.csv`
+entry from Stage 4 to a hash-bound COMSOL execution archive. It recomputes
+sensor resonance/sensitivity/FOM from complete RI spectra, verifies fixed
+geometry and source/refinement model hashes, and counts **all** solver
+failures in the denominator. See
+[COMSOL_INDEPENDENT_VERIFICATION.md](COMSOL_INDEPENDENT_VERIFICATION.md).
+
+```bash
+python scripts/verify_inverse_comsol.py \
+  --benchmark outputs/research/stage4 \
+  --solver-archive /path/to/real/solver_archive \
+  --refinement-archive /path/to/real/refinement_archive \
+  --out outputs/research/stage5 \
+  --strict
+```
+
+**Important:** Without authentic external solver model/log/export archives,
+this command correctly produces a failed/blocked audit instead of inventing
+physics. Consistent file hashes and recomputed metrics are *not* proof of
+physical correctness or real COMSOL execution. The paper's independent
+physics validation and publication gate remain open research blockers.
+
+
+## Stage 6: claim-traceable manuscript results draft
+
+An executable manuscript-working package now checks frozen Stage 4/5 hashes,
+reruns Stage 5 when genuine external COMSOL archives and registry are provided,
+and creates a claim-level evidence ledger and manuscript draft. See
+[CLAIM_TRACEABLE_PUBLICATION.md](CLAIM_TRACEABLE_PUBLICATION.md).
+
+The builder deliberately withholds optical metrics from a Stage 5 JSON file
+alone. All numbers are review-only even after a numerical archive re-audit,
+and independent solver/source authenticity plus electromagnetic model
+scientific review still block publication approval.
+
+A blocker-only package can be generated without real COMSOL archives:
+
+    python scripts/build_claim_evidence_package.py --benchmark outputs/research/stage4 --out outputs/publication/stage6
+
+C03 physical correctness, C04 independently tested tandem superiority and
+C06 journal readiness remain blocked until external experiments, independent
+review and stronger statistical design are completed.
+
+
+## Stage 7: run actual COMSOL evaluation of frozen inverse designs
+
+The first real COMSOL request execution entrypoint is now documented in
+[REAL_COMSOL_CAMPAIGN.md](REAL_COMSOL_CAMPAIGN.md). It freezes Stage 4
+request/model/config hashes and RI/normalization protocol **before**
+execution, invokes the existing local `mph` COMSOL backend for all queued
+RI points (no synthetic fallback), records all solver failures and outputs
+raw wavelength/loss spectra. Final sealing requires a separately sourced
+native solver log and a matching, numerically consistent refinement archive.
+
+```bash
+python scripts/run_comsol_verification_campaign.py --help
+python scripts/run_comsol_verification_campaign.py plan --help
+python scripts/run_comsol_verification_campaign.py run --help
+python scripts/run_comsol_verification_campaign.py seal --help
+```
+
+The executable path and unit-tested failure handling **do not** mean
+COMSOL has been run on the repository's test infrastructure: the real
+model, license, genuine native solver logs and physical review have not
+been supplied. The publication evidence gate remains closed.
+
+
+## Stage 8: resumable real COMSOL sweep campaign
+
+A checkpointed solver runner can now commit batches with SHA-256 integrity,
+validate saved spectra and design identities before resuming, and reject
+altered or missing batch evidence. See
+[RESUMABLE_COMSOL_CAMPAIGN.md](RESUMABLE_COMSOL_CAMPAIGN.md).
+
+```bash
+python scripts/run_comsol_verification_campaign.py run-batched --help
+python scripts/run_comsol_verification_campaign.py inspect --help
+```
+
+The Stage 7 seal path now checks checkpointed source archives against the
+individual batch journal before proceeding to Stage 5. This does **not**
+run COMSOL in GitHub CI, certify electromagnetic correctness, or solve
+the absence of genuine model, native log and independent refinement inputs.
+
+
+## Stage 9: native solver log per COMSOL execution session
+
+[COMSOL_SESSION_PROVENANCE.md](COMSOL_SESSION_PROVENANCE.md) describes
+new session-bound log receipts, explicit crashed-session closure,
+mandatory all-session coverage before sealing, and sealed Stage 5
+reverification. The physical authenticity and independent scientific
+review blocker **remains open**; no COMSOL was run by CI.
+
+
+## Stage 10: live model and one-RI pilot readiness
+
+[COMSOL_MODEL_PILOT_GATE.md](COMSOL_MODEL_PILOT_GATE.md) documents a
+separate fail-closed structural check and optional *real* local solver
+pilot before committing time to a large RI campaign. The gate requires
+the frozen Stage 4/7 inputs, explicit unit conversion, model parameter
+names, matching study, materials, mesh and physics interface presence,
+and one physically generated, numerically consistent spectrum to enable
+**operational** solver-run readiness.
+
+CI uses a dummy model and template config to verify rejection, not to
+claim physics results. Even a successful genuine one-point pilot does
+**not** establish sensor sensitivity, FOM, mesh convergence, model
+scientific validity or journal readiness.
+
+
+## Stage 11: RI parameter coupling and repeatability before long solves
+
+After passing the Stage 10 one-RI model gate, run the separate
+[RI response sanity diagnostic](COMSOL_RI_RESPONSE_GUARD.md). It solves
+the first frozen geometry at low, center, high, then **repeated center**
+analyte RI, checking that the resonance actually responds monotonically
+and repeatably to RI changes on a resolved wavelength grid.
+
+Both `run` and `run-batched` now require **two** source-bound reports:
+`--readiness-report` and `--ri-response-report`. CI exercises software
+fixtures and cannot pass them off as physical simulations. A diagnostic
+pass does not establish full-sweep sensitivity, mesh convergence, solver
+authenticity or journal-ready numerical evidence.
+
+
+## Stage 12: protect solver spectra and geometry values against false success
+
+[COMSOL_SPECTRUM_QUALITY.md](COMSOL_SPECTRUM_QUALITY.md) describes
+engineering checks that refuse flattened multi-eigenmode outputs,
+non-real/negative loss, unresolved or boundary-truncated resonance peaks,
+invalid units and nonfinite geometric parameters. The original COMSOL
+runner and downstream archived/checkpointed spectrum readers use the
+same numerical gate. Synthetic tests of its failure handling do **not**
+verify genuine optical FEM outputs or publication-readiness.
