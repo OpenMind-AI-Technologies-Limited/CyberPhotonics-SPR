@@ -285,3 +285,36 @@ invalid units and nonfinite geometric parameters. The original COMSOL
 runner and downstream archived/checkpointed spectrum readers use the
 same numerical gate. Synthetic tests of its failure handling do **not**
 verify genuine optical FEM outputs or publication-readiness.
+
+
+## Stage 13: prevent cross-request sensitivity/FOM claims
+
+Arbitrary COMSOL candidate batches may contain overlapping geometry/RI
+requests or incomplete RI sweeps. The updated backend now preserves
+their **raw successful spectra** but does not compute sensitivity or FOM
+from such a batch. Only an explicitly constructed complete, unique-RI
+grid may produce clearly labeled *unqualified diagnostic* derivatives;
+duplicate or failed RI samples block them. See
+[COMSOL_REQUEST_SAFE_DERIVATIVES.md](COMSOL_REQUEST_SAFE_DERIVATIVES.md).
+This change does not fill the missing authenticated COMSOL evidence.
+
+
+## Stage 14: COMSOL checkpoint model lifecycle resource management
+
+[REUSABLE_COMSOL_MODEL_SESSION.md](REUSABLE_COMSOL_MODEL_SESSION.md)
+adds an explicitly opt-in reuse of a single MPh-loaded model across
+checkpoint batches, with owned-model removal on completion/interruption.
+This is a performance/resource-lifetime engineering improvement only.
+It does not establish physical solver results, equivalence of numerical
+initialization, mesh/material/PML validity or scientific submission readiness.
+
+
+## Stage 15: compare numerical outputs before endorsing reused-model mode
+
+The [COMSOL model-mode equivalence audit](COMSOL_MODEL_MODE_EQUIVALENCE.md)
+provides frozen-source, frozen-threshold, complete paired-spectrum
+comparisons for `per_batch_load` versus `reused_loaded_model`
+checkpoint campaigns. It refuses missing/altered samples and records
+operator-supplied session-native log coverage. CI uses synthetic
+fixtures only; a real licensed COMSOL A/B experiment and independent
+numerical/mode/mesh review are still missing under issue #42.

@@ -178,3 +178,30 @@ Both `run` and `run-batched` now require **two** source-bound reports:
 fixtures and cannot pass them off as physical simulations. A diagnostic
 pass does not establish full-sweep sensitivity, mesh convergence, solver
 authenticity or journal-ready numerical evidence.
+
+
+## Stage 14: reuse one genuinely loaded COMSOL model across batches (opt-in)
+
+Use `--reuse-loaded-model` with `run-batched` and on all `--resume`
+invocations if your COMSOL installation supports it. This keeps one
+loaded model in the MPh client for a single execution invocation instead
+of reloading a large model before each batch. Every batch remains
+independently SHA-checkpointed, and the original per-session native
+log requirements are unchanged. The mode is pinned in the immutable
+checkpoint contract. Legacy per-batch runs remain the default.
+
+See [REUSABLE_COMSOL_MODEL_SESSION.md](REUSABLE_COMSOL_MODEL_SESSION.md).
+Real model-reuse versus model-reload numerical equivalence has **not**
+been tested and must be established with genuine solver outputs.
+
+
+## Stage 15: independent model-lifecycle numeric A/B audit
+
+See [COMSOL_MODEL_MODE_EQUIVALENCE.md](COMSOL_MODEL_MODE_EQUIVALENCE.md)
+for comparing complete genuine reloaded-vs-reused model runs. The
+comparison reads independently checked checkpoint chunks and raw
+spectra, enforces source-identical frozen plan/model/RI identities,
+and fails on solver error, changed grids, resonance/FWHM or optical
+loss discrepancies beyond explicit tolerances. Both modes continue
+to require genuine per-session native logs for a complete source
+inventory; their byte hashes do not authenticate COMSOL origin.
